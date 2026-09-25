@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Qual é o seu signo?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#0B0417; --card:#1D1038; --line:rgba(245,238,255,.14);
+    --text:#F3EDFF; --muted:#B6A6DE; --gold:#F0C572; --violet:#8B5CF6; --pink:#E874C4;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:inherit;margin:0;padding:0}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(ellipse 700px 500px at 50% -10%, rgba(139,92,246,.35), transparent 60%),
+      radial-gradient(ellipse 600px 400px at 90% 20%, rgba(232,116,196,.18), transparent 60%),
+      var(--bg-0);
+    color:var(--text); font-family:'Manrope',sans-serif; min-height:100%; overflow-x:hidden;
+  }
+  .stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7}
+  .stars span{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:twinkle 3.5s ease-in-out infinite}
+  @keyframes twinkle{0%,100%{opacity:.15}50%{opacity:.9}}
+  main{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:72px 24px 100px}
+  .eyebrow{font-size:.85rem;color:var(--muted);letter-spacing:.02em;margin-bottom:18px}
+  h1{font-family:'Fraunces',serif;font-optical-sizing:auto;font-weight:500;font-size:clamp(2.3rem,6vw,3.4rem);line-height:1.08;letter-spacing:-.01em}
+  .lede{margin-top:18px;color:var(--muted);font-size:1.05rem;line-height:1.6;max-width:46ch}
+  form{margin-top:44px;display:flex;flex-direction:column;gap:20px}
+  .field{display:flex;flex-direction:column;gap:8px}
+  label{font-size:.92rem;color:var(--muted)}
+  input{
+    background:var(--card);border:1px solid var(--line);color:var(--text);
+    font-family:'Manrope',sans-serif;font-size:1.05rem;padding:16px 18px;border-radius:14px;
+    outline:none;transition:border-color .2s;color-scheme:dark;
+  }
+  input:focus-visible{border-color:var(--violet)}
+  button{
+    background:linear-gradient(120deg,var(--violet),var(--pink));color:#fff;border:none;
+    font-family:'Manrope',sans-serif;font-weight:700;font-size:1.02rem;padding:16px 20px;
+    border-radius:14px;cursor:pointer;transition:transform .15s, filter .2s;
+  }
+  button:hover{filter:brightness(1.08)}
+  button:active{transform:scale(.985)}
+  button:disabled{opacity:.6;cursor:not-allowed}
+  button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  .hint{font-size:.85rem;color:var(--muted)}
+  .error{display:none;color:var(--pink);font-size:.9rem;margin-top:-8px}
+  .error.show{display:block}
+  #result{margin-top:56px;display:none}
+  #result.show{display:block;animation:rise .5s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+  .sign-head{display:flex;align-items:center;gap:20px}
+  .glyph{
+    width:84px;height:84px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 30% 25%, rgba(255,255,255,.16), transparent 55%),linear-gradient(140deg,var(--violet),var(--pink));
+    font-size:2.4rem;
+  }
+  .sign-name{font-family:'Fraunces',serif;font-weight:500;font-size:2rem;line-height:1.1}
+  .sign-dates{color:var(--muted);margin-top:4px;font-size:.95rem}
+  .meta{display:flex;gap:28px;flex-wrap:wrap;margin:28px 0 32px;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .meta div span{display:block}
+  .meta .k{font-size:.8rem;color:var(--muted)}
+  .meta .v{font-size:1.02rem;margin-top:4px}
+  h2.section{font-family:'Fraunces',serif;font-weight:500;font-size:1.25rem;margin:0 0 14px}
+  ul.traits{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+  ul.traits li{padding-left:22px;position:relative;line-height:1.5}
+  ul.traits li::before{content:"";position:absolute;left:0;top:.55em;width:7px;height:7px;border-radius:50%;background:var(--gold)}
+  .compat{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+  .compat .chip{border:1px solid var(--line);padding:9px 16px;border-radius:999px;font-size:.92rem;display:flex;align-items:center;gap:8px}
+  footer{margin-top:64px;color:var(--muted);font-size:.85rem;text-align:center}
+  @media (max-width:420px){
+    main{padding:56px 18px 80px}
+    .sign-head{gap:14px}
+    .glyph{width:68px;height:68px;font-size:1.9rem}
+    .sign-name{font-size:1.6rem}
+  }
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+
+<main>
+  <p class="eyebrow">Astrologia, sem enrolação</p>
+  <h1>Qual é o seu signo — e o que ele diz sobre você?</h1>
+  <p class="lede">Preencha seus dados e descubra seu signo solar, elemento, planeta regente e as características que mais combinam com ele. Cada consulta fica salva no banco de dados.</p>
+
+  <form id="signForm">
+    <div class="field">
+      <label for="name">Nome</label>
+      <input type="text" id="name" placeholder="Como podemos te chamar?" required>
+    </div>
+    <div class="field">
+      <label for="birthdate">Data de nascimento</label>
+      <input type="date" id="birthdate" required>
+    </div>
+    <p class="error" id="errorMsg"></p>
+    <button type="submit" id="submitBtn">Descobrir meu signo</button>
+    <p class="hint">Seus dados ficam salvos apenas no nosso banco, para você poder ver o histórico depois.</p>
+  </form>
+
+  <section id="result">
+    <div class="sign-head">
+      <div class="glyph" id="glyph"></div>
+      <div>
+        <div class="sign-name" id="signName"></div>
+        <div class="sign-dates" id="signDates"></div>
+      </div>
+    </div>
+
+    <div class="meta">
+      <div><span class="k">Elemento</span><span class="v" id="element"></span></div>
+      <div><span class="k">Planeta regente</span><span class="v" id="planet"></span></div>
+      <div><span class="k">Modalidade</span><span class="v" id="modality"></span></div>
+    </div>
+
+    <h2 class="section">Características</h2>
+    <ul class="traits" id="traits"></ul>
+
+    <h2 class="section">Combina bem com</h2>
+    <div class="compat" id="compat"></div>
+  </section>
+
+  <footer>Feito para curiosos do zodíaco.</footer>
+</main>
+
+<script>
+const starsEl = document.getElementById('stars');
+for(let i=0;i<60;i++){
+  const s=document.createElement('span');
+  s.style.left=Math.random()*100+'%';
+  s.style.top=Math.random()*100+'%';
+  s.style.animationDelay=(Math.random()*3.5)+'s';
+  s.style.opacity=Math.random();
+  starsEl.appendChild(s);
+}
+
+const form = document.getElementById('signForm');
+const errorMsg = document.getElementById('errorMsg');
+const submitBtn = document.getElementById('submitBtn');
+const result = document.getElementById('result');
+
+form.addEventListener('submit', async function(e){
+  e.preventDefault();
+  errorMsg.classList.remove('show');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Consultando os astros...';
+
+  const name = document.getElementById('name').value.trim();
+  const birthdate = document.getElementById('birthdate').value;
+
+  try {
+    const res = await fetch('/api/descobrir', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, birthdate })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Não foi possível calcular seu signo.');
+    }
+
+    document.getElementById('glyph').textContent = data.glyph;
+    document.getElementById('signName').textContent = data.name;
+    document.getElementById('signDates').textContent = data.date_range;
+    document.getElementById('element').textContent = data.element;
+    document.getElementById('planet').textContent = data.planet;
+    document.getElementById('modality').textContent = data.modality;
+
+    const traitsEl = document.getElementById('traits');
+    traitsEl.innerHTML = '';
+    data.traits.forEach(t=>{
+      const li=document.createElement('li');
+      li.textContent=t;
+      traitsEl.appendChild(li);
+    });
+
+    const compatEl = document.getElementById('compat');
+    compatEl.innerHTML = '';
+    data.compat.forEach(c=>{
+      const chip=document.createElement('div');
+      chip.className='chip';
+      chip.innerHTML = `<span>${c.glyph}</span><span>${c.name}</span>`;
+      compatEl.appendChild(chip);
+    });
+
+    result.classList.add('show');
+    result.scrollIntoView({behavior:'smooth', block:'start'});
+  } catch (err) {
+    errorMsg.textContent = err.message;
+    errorMsg.classList.add('show');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Descobrir meu signo';
+  }
+});
+</script>
+</body>
+</html>
